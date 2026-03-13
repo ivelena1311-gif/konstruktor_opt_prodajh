@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Конструктор оптовых продаж — AI-сервис для брендов одежды</title>
+<meta name="description" content="Создайте продающую оптовую карточку товара и презентацию коллекции за 15 минут. AI-сервис для брендов одежды, которые продают байерам.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: #FAF7F2;
+  color: #1C1C1C;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* ===== TOKENS ===== */
+:root {
+  --bg: #FAF7F2;
+  --surface: #FFFFFF;
+  --accent: #8B2635;
+  --accent-dark: #3D1A24;
+  --gold: #C9A84C;
+  --gold-light: #F0E4C0;
+  --text: #1C1C1C;
+  --muted: #6B6B6B;
+  --peach: #E8D5C0;
+  --border: rgba(139, 38, 53, 0.12);
+  --shadow: 0 4px 24px rgba(28, 28, 28, 0.08);
+  --shadow-lg: 0 12px 48px rgba(28, 28, 28, 0.12);
+  --radius: 16px;
+  --radius-sm: 8px;
+  --radius-lg: 24px;
+}
+
+/* ===== GRADIENT TEXT ===== */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+/* ===== CURSOR GLOW ===== */
+.glow-cursor {
+  position: fixed; width: 320px; height: 320px;
+  background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%);
+  border-radius: 50%; pointer-events: none; z-index: 0;
+  transform: translate(-50%, -50%);
+  transition: left 0.6s cubic-bezier(0.22,1,0.36,1), top 0.6s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* ===== GRAIN TEXTURE ===== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* ===== TYPOGRAPHY ===== */
+h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; }
+h2 { font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 600; }
+h3 { font-size: clamp(1.2rem, 2.5vw, 1.5rem); font-weight: 600; }
+p { color: var(--muted); }
+
+/* ===== LAYOUT ===== */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section { padding: 100px 0; }
+.section-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 20px;
+}
+.section-label::before {
+  content: ''; display: block; width: 24px; height: 2px; background: var(--accent);
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px; border-radius: 50px; font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem; font-weight: 600; cursor: pointer; border: none;
+  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1); text-decoration: none;
+  position: relative; overflow: hidden;
+}
+.btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%);
+  transform: translateX(-100%); transition: transform 0.5s ease;
+  border-radius: inherit;
+}
+.btn:hover::after { transform: translateX(100%); }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-dark); transform: translateY(-3px); box-shadow: 0 10px 28px rgba(139, 38, 53, 0.4); }
+.btn-gold { background: var(--gold); color: #fff; }
+.btn-gold:hover { background: #b8922f; transform: translateY(-3px); box-shadow: 0 10px 28px rgba(201, 168, 76, 0.45); }
+.btn-outline { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(139,38,53,0.12); }
+.btn-lg { padding: 18px 40px; font-size: 1.0625rem; }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--surface); border-radius: var(--radius); padding: 32px;
+  box-shadow: var(--shadow); border: 1px solid var(--border);
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease;
+  will-change: transform;
+}
+.card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(28,28,28,0.14); }
+
+/* ===== REVEAL ANIMATION ===== */
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-left  { opacity: 0; transform: translateX(-40px); transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+.reveal-left.visible  { opacity: 1; transform: translateX(0); }
+.reveal-right { opacity: 0; transform: translateX(40px);  transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+.reveal-scale { opacity: 0; transform: scale(0.88); transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+.reveal-scale.visible { opacity: 1; transform: scale(1); }
+.reveal-delay-1 { transition-delay: 0.12s; }
+.reveal-delay-2 { transition-delay: 0.24s; }
+.reveal-delay-3 { transition-delay: 0.36s; }
+.reveal-delay-4 { transition-delay: 0.48s; }
+.reveal-delay-5 { transition-delay: 0.60s; }
+
+/* ===== NAV ===== */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+  padding: 20px 0; transition: all 0.3s ease;
+}
+.nav.scrolled {
+  background: rgba(250, 247, 242, 0.92);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  padding: 14px 0;
+  box-shadow: 0 2px 20px rgba(28, 28, 28, 0.06);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: var(--text);
+}
+.nav-logo span { color: var(--accent); }
+.nav-links {
+  display: flex; align-items: center; gap: 32px;
+}
+.nav-links a {
+  font-size: 0.875rem; font-weight: 500; color: var(--muted);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-cta { margin-left: 16px; }
+.nav-burger {
+  display: none; flex-direction: column; gap: 5px; cursor: pointer;
+  background: none; border: none; padding: 4px;
+}
+.nav-burger span {
+  display: block; width: 24px; height: 2px; background: var(--text);
+  border-radius: 2px; transition: all 0.3s ease;
+}
+.nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile {
+  display: none; position: fixed; inset: 0; top: 65px;
+  background: rgba(250, 247, 242, 0.98); backdrop-filter: blur(20px);
+  z-index: 800; flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+}
+.nav-mobile.open { display: flex; }
+.nav-mobile a { font-size: 1.25rem; font-weight: 500; color: var(--text); }
+.nav-mobile a:hover { color: var(--accent); }
+
+/* ===== HERO ===== */
+@keyframes heroGradient {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes orb1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(40px, -30px) scale(1.08); }
+  66%       { transform: translate(-20px, 20px) scale(0.96); }
+}
+@keyframes orb2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(-30px, 20px) scale(1.06); }
+  66%       { transform: translate(30px, -40px) scale(0.98); }
+}
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  padding-top: 100px; padding-bottom: 80px;
+  background: linear-gradient(-45deg, #FAF7F2, #F5EDE0, #F0E4D4, #FAF7F2, #F2EBE0);
+  background-size: 400% 400%;
+  animation: heroGradient 12s ease infinite;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -30%; right: -5%; width: 55%; height: 110%;
+  background: radial-gradient(ellipse, rgba(201,168,76,0.13) 0%, transparent 65%);
+  pointer-events: none; animation: orb1 10s ease-in-out infinite;
+}
+.hero::after {
+  content: '';
+  position: absolute; bottom: -20%; left: -10%; width: 50%; height: 80%;
+  background: radial-gradient(ellipse, rgba(139,38,53,0.06) 0%, transparent 65%);
+  pointer-events: none; animation: orb2 14s ease-in-out infinite;
+}
+.hero-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold-light); color: #8B6914; border-radius: 50px;
+  padding: 6px 16px; font-size: 0.8125rem; font-weight: 600; margin-bottom: 24px;
+}
+.hero-badge-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.hero h1 { margin-bottom: 24px; }
+.hero h1 em { font-style: italic; color: var(--accent); }
+.typewriter-wrap { display: inline; }
+.typewriter-cursor {
+  display: inline-block; width: 3px; height: 0.85em;
+  background: var(--accent); margin-left: 2px; vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.hero-desc { font-size: 1.125rem; max-width: 480px; margin-bottom: 40px; line-height: 1.7; }
+.hero-actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+.hero-note { font-size: 0.8125rem; color: var(--muted); }
+.hero-stats {
+  display: flex; gap: 32px; margin-top: 48px; padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+.hero-stat-val { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--text); }
+.hero-stat-label { font-size: 0.8125rem; color: var(--muted); }
+
+/* HERO CARD MOCK */
+.hero-visual { position: relative; }
+.product-card-mock {
+  background: var(--surface); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--border);
+  overflow: hidden; max-width: 420px; margin: 0 auto;
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.card-mock-header {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  padding: 20px 24px; color: #fff;
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.card-mock-brand { font-size: 0.75rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+.card-mock-name { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 600; }
+.card-mock-season { font-size: 0.75rem; opacity: 0.7; }
+.card-mock-photo {
+  width: 100%; height: 200px;
+  background: linear-gradient(160deg, #E8D5C0 0%, #D4B896 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.card-mock-photo-icon { font-size: 3rem; opacity: 0.3; }
+.card-mock-photo-tag {
+  position: absolute; bottom: 12px; left: 12px;
+  background: rgba(255,255,255,0.9); border-radius: 50px; padding: 4px 12px;
+  font-size: 0.75rem; font-weight: 600; color: var(--accent);
+}
+.card-mock-body { padding: 20px 24px; }
+.card-mock-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;
+}
+.card-mock-item { background: #FAF7F2; border-radius: var(--radius-sm); padding: 10px 12px; }
+.card-mock-item-label { font-size: 0.6875rem; color: var(--muted); margin-bottom: 2px; }
+.card-mock-item-val { font-size: 0.9375rem; font-weight: 600; color: var(--text); }
+.card-mock-price { background: linear-gradient(135deg, var(--gold-light), #F5ECD5); border-radius: var(--radius-sm); padding: 14px 16px; }
+.card-mock-price-label { font-size: 0.6875rem; color: var(--muted); margin-bottom: 4px; }
+.card-mock-price-val { font-size: 1.5rem; font-weight: 700; color: var(--text); font-family: 'Playfair Display', serif; }
+.card-mock-price-sub { font-size: 0.75rem; color: var(--muted); }
+.card-mock-ai-badge {
+  margin-top: 12px; display: flex; align-items: center; gap: 8px;
+  font-size: 0.75rem; color: var(--muted);
+}
+.card-mock-ai-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 2s infinite; }
+.hero-floating-1, .hero-floating-2 {
+  position: absolute; background: var(--surface); border-radius: var(--radius-sm);
+  padding: 10px 14px; box-shadow: var(--shadow); border: 1px solid var(--border);
+  font-size: 0.8125rem; font-weight: 600; white-space: nowrap;
+}
+.hero-floating-1 { top: 30px; right: -20px; animation: float 5s ease-in-out infinite 1s; }
+.hero-floating-2 { bottom: 60px; left: -20px; animation: float 7s ease-in-out infinite 2s; }
+
+/* ===== MARQUEE ===== */
+.marquee-section { padding: 28px 0; background: var(--accent); overflow: hidden; }
+.marquee-track { display: flex; gap: 0; animation: marquee 25s linear infinite; }
+.marquee-item {
+  flex-shrink: 0; display: flex; align-items: center; gap: 16px;
+  padding: 0 32px; color: rgba(255,255,255,0.8); font-size: 0.875rem; font-weight: 500;
+}
+.marquee-dot { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ===== PAIN SECTION ===== */
+.pain-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  margin-top: 56px; perspective: 1200px;
+}
+.pain-card {
+  background: var(--surface); border-radius: var(--radius); padding: 32px;
+  border: 1px solid var(--border); position: relative; overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+  will-change: transform;
+}
+.pain-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(139,38,53,0.04) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.35s ease;
+}
+.pain-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(139,38,53,0.12); border-color: rgba(139,38,53,0.28); }
+.pain-card:hover::before { opacity: 1; }
+.pain-num {
+  font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 700;
+  color: rgba(139, 38, 53, 0.22); line-height: 1; margin-bottom: 16px;
+  text-shadow: 0 2px 8px rgba(139, 38, 53, 0.08);
+}
+.pain-card h3 { margin-bottom: 10px; font-size: 1.125rem; }
+.pain-card p { font-size: 0.9375rem; }
+.pain-last-row {
+  grid-column: 1 / -1;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+}
+
+/* ===== HOW IT WORKS ===== */
+.how-section { background: linear-gradient(180deg, #FAF7F2 0%, #F0E8DC 100%); }
+.steps-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 56px; position: relative;
+}
+.steps-grid::before {
+  content: ''; position: absolute; top: 40px; left: calc(12.5% + 40px); right: calc(12.5% + 40px);
+  height: 2px; background: linear-gradient(90deg, var(--accent), var(--gold));
+  z-index: 0;
+}
+.step { position: relative; z-index: 1; }
+.step-num {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: var(--surface); border: 2px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700;
+  color: var(--accent); margin-bottom: 20px;
+  position: relative; z-index: 1;
+  box-shadow: 0 0 0 8px var(--bg);
+}
+.step h3 { font-size: 1.0625rem; margin-bottom: 8px; }
+.step p { font-size: 0.875rem; }
+.step-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.step-tag {
+  background: var(--gold-light); color: #7A6020;
+  border-radius: 50px; padding: 3px 10px; font-size: 0.75rem; font-weight: 500;
+}
+
+/* ===== FEATURES BENTO ===== */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: auto;
+  gap: 24px; margin-top: 56px;
+  perspective: 1400px;
+}
+.bento-card {
+  background: var(--surface); border-radius: var(--radius); padding: 32px;
+  border: 1px solid var(--border); overflow: hidden; position: relative;
+  transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+  will-change: transform;
+}
+.bento-card::after {
+  content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: radial-gradient(circle at center, rgba(201,168,76,0.06) 0%, transparent 60%);
+  opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
+}
+.bento-card:hover { transform: translateY(-6px); box-shadow: 0 20px 56px rgba(28,28,28,0.13); }
+.bento-card:hover::after { opacity: 1; }
+.bento-card:nth-child(1) { grid-column: span 3; grid-row: span 2; }
+.bento-card:nth-child(2) { grid-column: span 3; }
+.bento-card:nth-child(3) { grid-column: span 3; }
+.bento-card:nth-child(4) { grid-column: span 2; }
+.bento-card:nth-child(5) { grid-column: span 2; }
+.bento-card:nth-child(6) { grid-column: span 2; }
+.bento-card.accent-card {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #fff;
+}
+.bento-card.accent-card p, .bento-card.accent-card h3 { color: rgba(255,255,255,0.9); }
+.bento-card.gold-card { background: linear-gradient(135deg, var(--gold-light), #EDD89A); }
+.bento-icon { font-size: 2.5rem; margin-bottom: 20px; }
+.bento-card h3 { margin-bottom: 10px; }
+.bento-big-num {
+  font-family: 'Playfair Display', serif; font-size: 5rem; font-weight: 700;
+  color: rgba(139, 38, 53, 0.06); position: absolute; bottom: 16px; right: 24px;
+  line-height: 1;
+}
+.bento-list { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.bento-list-item { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; }
+.bento-list-item::before { content: '✓'; color: #22c55e; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+/* ===== EXAMPLE CARD ===== */
+.example-section { background: linear-gradient(135deg, var(--accent-dark) 0%, #5C1E2A 100%); }
+.example-section .section-label { color: var(--gold); }
+.example-section .section-label::before { background: var(--gold); }
+.example-section h2, .example-section .section-intro { color: #fff; }
+.example-section .section-intro { color: rgba(255,255,255,0.7); }
+.example-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 56px; align-items: start; }
+.example-card-full {
+  background: var(--surface); border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.3);
+}
+.ecf-header {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  padding: 24px; color: #fff;
+}
+.ecf-header-top { display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px; }
+.ecf-brand { font-size: 0.75rem; opacity: 0.7; letter-spacing: 0.1em; text-transform: uppercase; }
+.ecf-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; }
+.ecf-season { font-size: 0.8125rem; opacity: 0.7; }
+.ecf-badge { background: rgba(255,255,255,0.2); border-radius: 50px; padding: 4px 10px; font-size: 0.75rem; }
+.ecf-photos { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 4px; height: 220px; }
+.ecf-photo-main {
+  background: linear-gradient(160deg, #E8D5C0, #C8A882);
+  display: flex; align-items: center; justify-content: center; font-size: 3rem; opacity: 0.5;
+}
+.ecf-photo-thumb {
+  background: linear-gradient(160deg, #D4B896, #B89370);
+  display: flex; align-items: center; justify-content: center; font-size: 1.5rem; opacity: 0.4;
+}
+.ecf-body { padding: 24px; }
+.ecf-features { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.ecf-feature {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: #FAF7F2; border-radius: var(--radius-sm); padding: 12px;
+}
+.ecf-feature-icon { font-size: 1.25rem; flex-shrink: 0; }
+.ecf-feature-label { font-size: 0.6875rem; color: var(--muted); }
+.ecf-feature-val { font-size: 0.875rem; font-weight: 600; color: var(--text); }
+.ecf-economics { background: linear-gradient(135deg, #FAF7F2, #F0E8DC); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 16px; }
+.ecf-econ-title { font-size: 0.75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+.ecf-econ-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.ecf-econ-item { text-align: center; }
+.ecf-econ-val { font-family: 'Playfair Display', serif; font-size: 1.125rem; font-weight: 700; color: var(--text); }
+.ecf-econ-label { font-size: 0.6875rem; color: var(--muted); }
+.ecf-script { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 16px; }
+.ecf-script-title { font-size: 0.75rem; font-weight: 600; color: #16a34a; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.ecf-script-text { font-size: 0.8125rem; color: #374151; line-height: 1.5; }
+.example-info { color: rgba(255,255,255,0.9); }
+.example-info h3 { color: #fff; margin-bottom: 16px; font-size: 1.5rem; }
+.example-info p { color: rgba(255,255,255,0.7); margin-bottom: 32px; line-height: 1.7; }
+.example-features { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
+.example-feature-item { display: flex; align-items: flex-start; gap: 16px; }
+.example-feature-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(201, 168, 76, 0.2); border: 1px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8125rem; font-weight: 700; color: var(--gold); flex-shrink: 0;
+}
+.example-feature-text { font-size: 0.9375rem; color: rgba(255,255,255,0.8); padding-top: 4px; }
+
+/* ===== TESTIMONIALS ===== */
+.testimonials-section { background: linear-gradient(180deg, #F0E8DC 0%, #FAF7F2 100%); }
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-bottom: 64px; }
+.stat-card {
+  background: var(--surface); border-radius: var(--radius); padding: 32px; text-align: center;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+.stat-val {
+  font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700;
+  color: var(--accent); display: block; margin-bottom: 8px;
+}
+.stat-label { font-size: 0.9375rem; color: var(--muted); }
+.reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.review-card {
+  background: var(--surface); border-radius: var(--radius); padding: 28px;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+  will-change: transform;
+}
+.review-card:hover { transform: translateY(-6px) rotate(0.5deg); box-shadow: 0 20px 56px rgba(28,28,28,0.14); border-color: var(--gold); }
+.review-stars { color: var(--gold); font-size: 1rem; margin-bottom: 14px; }
+.review-text { font-size: 0.9375rem; line-height: 1.65; margin-bottom: 20px; color: var(--text); }
+.review-author { display: flex; align-items: center; gap: 12px; }
+.review-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--peach), var(--gold-light));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif; font-size: 1.125rem; font-weight: 700; color: var(--accent);
+  flex-shrink: 0;
+}
+.review-name { font-size: 0.9375rem; font-weight: 600; color: var(--text); }
+.review-position { font-size: 0.8125rem; color: var(--muted); }
+
+/* ===== PRICING ===== */
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px; align-items: start; perspective: 1200px; }
+.pricing-card {
+  background: var(--surface); border-radius: var(--radius-lg); padding: 36px;
+  border: 1px solid var(--border); position: relative; overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+  will-change: transform;
+}
+.pricing-card::before {
+  content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  transition: left 0.6s ease; pointer-events: none;
+}
+.pricing-card:hover { transform: translateY(-8px); box-shadow: 0 24px 64px rgba(28,28,28,0.15); }
+.pricing-card:hover::before { left: 150%; }
+.pricing-card.featured {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border-color: transparent;
+  box-shadow: 0 20px 60px rgba(139, 38, 53, 0.4);
+  transform: scale(1.04);
+}
+.pricing-card.featured:hover { transform: scale(1.04) translateY(-6px); }
+.pricing-badge {
+  display: inline-block; background: var(--gold); color: #fff;
+  border-radius: 50px; padding: 4px 14px; font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 20px;
+}
+.pricing-tier { font-size: 0.875rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+.pricing-card.featured .pricing-tier { color: rgba(255,255,255,0.6); }
+.pricing-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 20px; }
+.pricing-card.featured .pricing-name { color: #fff; }
+.pricing-price {
+  display: flex; align-items: baseline; gap: 6px; margin-bottom: 8px;
+}
+.pricing-amount {
+  font-family: 'Playfair Display', serif; font-size: 2.75rem; font-weight: 700; color: var(--text);
+}
+.pricing-card.featured .pricing-amount { color: #fff; }
+.pricing-per { font-size: 0.875rem; color: var(--muted); }
+.pricing-card.featured .pricing-per { color: rgba(255,255,255,0.6); }
+.pricing-desc { font-size: 0.875rem; color: var(--muted); margin-bottom: 28px; }
+.pricing-card.featured .pricing-desc { color: rgba(255,255,255,0.7); }
+.pricing-features { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.pricing-feature { display: flex; align-items: flex-start; gap: 10px; font-size: 0.9rem; }
+.pricing-feature-check { color: #22c55e; font-weight: 700; flex-shrink: 0; }
+.pricing-card.featured .pricing-feature { color: rgba(255,255,255,0.85); }
+.pricing-card .btn { width: 100%; justify-content: center; }
+.pricing-card.featured .btn-outline {
+  background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: #fff;
+}
+.pricing-card.featured .btn-outline:hover { background: rgba(255,255,255,0.2); }
+
+/* ===== FAQ ===== */
+.faq-section { background: #FAF7F2; }
+.faq-list { max-width: 760px; margin: 56px auto 0; display: flex; flex-direction: column; gap: 16px; }
+.faq-item {
+  background: var(--surface); border-radius: var(--radius); overflow: hidden;
+  border: 1px solid var(--border); transition: border-color 0.3s;
+}
+.faq-item.open { border-color: rgba(139, 38, 53, 0.25); }
+.faq-question {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 28px; cursor: pointer; transition: background 0.2s;
+  font-weight: 500; font-size: 1rem; gap: 16px;
+}
+.faq-question:hover { background: #FAF7F2; }
+.faq-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg); border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0; color: var(--accent);
+  transition: transform 0.3s, background 0.3s;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); background: var(--accent); color: #fff; border-color: var(--accent); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+.faq-answer-inner { padding: 0 28px 24px; font-size: 0.9375rem; line-height: 1.7; color: var(--muted); }
+
+/* ===== CTA FINAL ===== */
+.cta-section {
+  background: linear-gradient(135deg, var(--accent-dark) 0%, #5C1E2A 60%, #3D1A24 100%);
+  text-align: center; padding: 120px 0;
+}
+.cta-section h2 { color: #fff; margin-bottom: 16px; }
+.cta-section p { color: rgba(255,255,255,0.7); font-size: 1.125rem; max-width: 520px; margin: 0 auto 48px; }
+.cta-form { display: flex; gap: 12px; max-width: 480px; margin: 0 auto; flex-wrap: wrap; }
+.cta-input {
+  flex: 1; min-width: 200px; padding: 16px 20px;
+  border-radius: 50px; border: 1.5px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08); color: #fff;
+  font-family: 'Inter', sans-serif; font-size: 0.9375rem;
+  outline: none; transition: border-color 0.2s;
+}
+.cta-input::placeholder { color: rgba(255,255,255,0.4); }
+.cta-input:focus { border-color: var(--gold); }
+.cta-note { color: rgba(255,255,255,0.4); font-size: 0.8125rem; margin-top: 16px; }
+.cta-trust { display: flex; gap: 24px; justify-content: center; margin-top: 40px; flex-wrap: wrap; }
+.cta-trust-item { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.6); font-size: 0.875rem; }
+.cta-trust-item::before { content: '✓'; color: var(--gold); }
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--accent-dark); padding: 60px 0 32px; color: rgba(255,255,255,0.7);
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-logo { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 12px; }
+.footer-logo span { color: var(--gold); }
+.footer-desc { font-size: 0.875rem; line-height: 1.6; max-width: 280px; }
+.footer-col-title { font-size: 0.875rem; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px; }
+.footer-links { display: flex; flex-direction: column; gap: 10px; }
+.footer-links a { font-size: 0.875rem; color: rgba(255,255,255,0.6); transition: color 0.2s; }
+.footer-links a:hover { color: var(--gold); }
+.footer-socials { display: flex; gap: 12px; margin-top: 20px; }
+.footer-social {
+  width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+  transition: background 0.2s; color: rgba(255,255,255,0.7);
+}
+.footer-social:hover { background: var(--gold); color: #fff; }
+.footer-bottom {
+  padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.8125rem; flex-wrap: wrap; gap: 12px;
+}
+
+/* ===== SUCCESS MESSAGE ===== */
+.success-msg {
+  display: none; background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: var(--radius-sm); padding: 14px 20px; color: #fff; text-align: center;
+  margin-top: 12px; font-size: 0.9375rem;
+}
+
+/* ===== BACK TO TOP ===== */
+.back-to-top {
+  position: fixed; bottom: 32px; right: 32px; z-index: 800;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--accent); color: #fff; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 24px rgba(139, 38, 53, 0.4);
+  opacity: 0; visibility: hidden;
+  transform: translateY(16px) scale(0.85);
+  transition: opacity 0.35s ease, visibility 0.35s, transform 0.35s cubic-bezier(0.22,1,0.36,1), background 0.2s;
+}
+.back-to-top.show {
+  opacity: 1; visibility: visible; transform: translateY(0) scale(1);
+}
+.back-to-top:hover {
+  background: var(--accent-dark); transform: translateY(-4px) scale(1.08);
+  box-shadow: 0 12px 32px rgba(139, 38, 53, 0.5);
+}
+.back-to-top svg { width: 20px; height: 20px; }
+
+/* ===== CONTACT FORM SECTION ===== */
+.contact-section { background: linear-gradient(180deg, #FAF7F2 0%, #F0E8DC 100%); }
+.contact-grid {
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 64px; align-items: start;
+  margin-top: 56px;
+}
+.contact-info h3 { margin-bottom: 16px; font-size: 1.5rem; }
+.contact-info p { margin-bottom: 32px; line-height: 1.7; }
+.contact-perks { display: flex; flex-direction: column; gap: 16px; }
+.contact-perk { display: flex; align-items: center; gap: 14px; }
+.contact-perk-icon {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-light), #EDD89A);
+  display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;
+}
+.contact-perk-text { font-size: 0.9375rem; color: var(--text); }
+.contact-form-wrap {
+  background: var(--surface); border-radius: var(--radius-lg); padding: 40px;
+  box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+}
+.cf-group { margin-bottom: 20px; }
+.cf-label {
+  display: block; font-size: 0.8125rem; font-weight: 600; color: var(--text);
+  margin-bottom: 8px; letter-spacing: 0.02em;
+}
+.cf-input, .cf-textarea {
+  width: 100%; padding: 14px 16px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  background: #FAF7F2; font-family: 'Inter', sans-serif; font-size: 0.9375rem; color: var(--text);
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  -webkit-appearance: none; appearance: none;
+}
+.cf-input:focus, .cf-textarea:focus {
+  border-color: var(--accent); background: #fff;
+  box-shadow: 0 0 0 3px rgba(139, 38, 53, 0.08);
+}
+.cf-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+.cf-btn { width: 100%; justify-content: center; }
+
+/* SUCCESS STATE */
+.cf-success {
+  display: none; text-align: center; padding: 24px 0;
+}
+.cf-success-circle {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px; font-size: 2rem;
+  animation: successPop 0.5s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes successPop {
+  0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+  60% { transform: scale(1.15) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.cf-success h3 { margin-bottom: 8px; color: var(--text); }
+.cf-success p { color: var(--muted); font-size: 0.9375rem; }
+.cf-success-particles {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  pointer-events: none; width: 200px; height: 200px;
+}
+
+@media (max-width: 768px) {
+  .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+  .contact-form-wrap { padding: 28px 20px; }
+  .back-to-top { bottom: 20px; right: 20px; width: 46px; height: 46px; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  .hero-visual { display: none; }
+  .steps-grid { grid-template-columns: repeat(2, 1fr); }
+  .steps-grid::before { display: none; }
+  .bento-card:nth-child(1) { grid-column: span 6; grid-row: span 1; }
+  .bento-card:nth-child(2) { grid-column: span 3; }
+  .bento-card:nth-child(3) { grid-column: span 3; }
+  .bento-card:nth-child(4) { grid-column: span 2; }
+  .bento-card:nth-child(5) { grid-column: span 2; }
+  .bento-card:nth-child(6) { grid-column: span 2; }
+  .example-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .section { padding: 64px 0; }
+  .nav-links { display: none; }
+  .nav-cta { display: none; }
+  .nav-burger { display: flex; }
+  .hero { padding-top: 80px; }
+  .hero h1 { font-size: 2rem; }
+  .pain-grid { grid-template-columns: 1fr; }
+  .pain-last-row { grid-column: 1 / -1; grid-template-columns: 1fr; }
+  .steps-grid { grid-template-columns: 1fr; gap: 24px; }
+  .bento-grid { grid-template-columns: 1fr; }
+  .bento-card:nth-child(n) { grid-column: span 1; grid-row: span 1; }
+  .stats-row { grid-template-columns: 1fr; }
+  .reviews-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .pricing-card.featured { transform: scale(1); }
+  .pricing-card.featured:hover { transform: translateY(-6px); }
+  .faq-question { font-size: 0.9375rem; padding: 18px 20px; }
+  .faq-answer-inner { padding: 0 20px 20px; }
+  .cta-form { flex-direction: column; }
+  .cta-input { min-width: unset; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .hero-stats { flex-direction: column; gap: 16px; }
+  .ecf-features { grid-template-columns: 1fr; }
+  .ecf-econ-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+@media (max-width: 480px) {
+  h2 { font-size: 1.75rem; }
+  .hero h1 { font-size: 1.75rem; }
+  .pricing-amount { font-size: 2.25rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav class="nav" id="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Конструктор<span>.</span>Опт</a>
+      <ul class="nav-links">
+        <li><a href="#how">Как работает</a></li>
+        <li><a href="#features">Что получите</a></li>
+        <li><a href="#example">Пример карточки</a></li>
+        <li><a href="#pricing">Цены</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#contact">Контакты</a></li>
+      </ul>
+      <a href="#cta" class="btn btn-primary nav-cta">Попробовать бесплатно</a>
+      <button class="nav-burger" id="burger" aria-label="Меню">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav-mobile" id="mobileMenu">
+  <a href="#how" onclick="closeMobile()">Как работает</a>
+  <a href="#features" onclick="closeMobile()">Что получите</a>
+  <a href="#example" onclick="closeMobile()">Пример карточки</a>
+  <a href="#pricing" onclick="closeMobile()">Цены</a>
+  <a href="#faq" onclick="closeMobile()">FAQ</a>
+  <a href="#contact" onclick="closeMobile()">Контакты</a>
+  <a href="#cta" class="btn btn-primary" onclick="closeMobile()">Попробовать бесплатно</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content reveal">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          AI-сервис для оптовых продаж
+        </div>
+        <h1 style="line-height:1.15;">
+          <span class="typewriter-wrap" id="typewriter"></span><span class="typewriter-cursor" id="cursor"></span>
+        </h1>
+        <p class="hero-desc">Вы загружаете фото и заполняете форму. AI создаёт профессиональную оптовую карточку, PDF-презентацию коллекции и скрипт переговоров — за 15 минут.</p>
+        <div class="hero-actions">
+          <a href="#cta" class="btn btn-primary btn-lg">Создать карточку →</a>
+          <a href="#example" class="btn btn-outline btn-lg">Посмотреть пример</a>
+        </div>
+        <p class="hero-note" style="margin-top:16px;">Первая карточка — бесплатно. Без карты.</p>
+        <div class="hero-stats">
+          <div>
+            <div class="hero-stat-val">15 мин</div>
+            <div class="hero-stat-label">вместо 3 дней работы</div>
+          </div>
+          <div>
+            <div class="hero-stat-val">200+</div>
+            <div class="hero-stat-label">брендов уже используют</div>
+          </div>
+          <div>
+            <div class="hero-stat-val">68%</div>
+            <div class="hero-stat-label">быстрее закрывают сделки</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual reveal reveal-delay-2">
+        <div class="product-card-mock">
+          <div class="card-mock-header">
+            <div>
+              <div class="card-mock-brand">LINA Brand · Весна-Лето 2025</div>
+              <div class="card-mock-name">Платье "Lina" миди</div>
+              <div class="card-mock-season">Шёлк 78% · Эластан 22%</div>
+            </div>
+          </div>
+          <div class="card-mock-photo">
+            <span class="card-mock-photo-icon">👗</span>
+            <div class="card-mock-photo-tag">AI-обработка</div>
+          </div>
+          <div class="card-mock-body">
+            <div class="card-mock-grid">
+              <div class="card-mock-item">
+                <div class="card-mock-item-label">Артикул</div>
+                <div class="card-mock-item-val">LN-2025-07</div>
+              </div>
+              <div class="card-mock-item">
+                <div class="card-mock-item-label">МОQ</div>
+                <div class="card-mock-item-val">12 шт / цвет</div>
+              </div>
+              <div class="card-mock-item">
+                <div class="card-mock-item-label">Размеры</div>
+                <div class="card-mock-item-val">XS–XL</div>
+              </div>
+              <div class="card-mock-item">
+                <div class="card-mock-item-label">Готовность</div>
+                <div class="card-mock-item-val">7–14 дней</div>
+              </div>
+            </div>
+            <div class="card-mock-price">
+              <div class="card-mock-price-label">Оптовая цена от партии 36 шт</div>
+              <div class="card-mock-price-val">3 200 ₽</div>
+              <div class="card-mock-price-sub">Розничная: 9 900 ₽ · Наценка байера ×3</div>
+            </div>
+            <div class="card-mock-ai-badge">
+              <span class="card-mock-ai-dot"></span>
+              Сгенерировано AI · Обновлено сейчас
+            </div>
+          </div>
+        </div>
+        <div class="hero-floating-1">✨ Карточка готова!</div>
+        <div class="hero-floating-2">📄 PDF создан · WhatsApp скрипт</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MARQUEE ===== -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marquee">
+    <div class="marquee-item">Оптовая карточка за 15 минут<span class="marquee-dot"></span></div>
+    <div class="marquee-item">PDF-презентация коллекции<span class="marquee-dot"></span></div>
+    <div class="marquee-item">Скрипты переговоров с байером<span class="marquee-dot"></span></div>
+    <div class="marquee-item">AI-обработка фото<span class="marquee-dot"></span></div>
+    <div class="marquee-item">Калькулятор экономики магазина<span class="marquee-dot"></span></div>
+    <div class="marquee-item">Коллекция под ключ<span class="marquee-dot"></span></div>
+    <div class="marquee-item">Больше закрытых сделок<span class="marquee-dot"></span></div>
+    <div class="marquee-item">Оптовая карточка за 15 минут<span class="marquee-dot"></span></div>
+    <div class="marquee-item">PDF-презентация коллекции<span class="marquee-dot"></span></div>
+    <div class="marquee-item">Скрипты переговоров с байером<span class="marquee-dot"></span></div>
+    <div class="marquee-item">AI-обработка фото<span class="marquee-dot"></span></div>
+    <div class="marquee-item">Калькулятор экономики магазина<span class="marquee-dot"></span></div>
+    <div class="marquee-item">Коллекция под ключ<span class="marquee-dot"></span></div>
+    <div class="marquee-item">Больше закрытых сделок<span class="marquee-dot"></span></div>
+  </div>
+</div>
+
+<!-- ===== PAIN SECTION ===== -->
+<section class="section" id="pain">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Узнаёте себя?</div>
+      <h2>Почему опт не идёт<br><em class="gradient-text" style="font-style:normal;">так, как хочется</em></h2>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card reveal reveal-delay-1">
+        <div class="pain-num">01</div>
+        <h3>Фото с телефона — не продают</h3>
+        <p>Байер листает каталог и уходит, потому что «не зацепило». А товар хороший — просто плохо показан.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-2">
+        <div class="pain-num">02</div>
+        <h3>Прайс в Excel — это не презентация</h3>
+        <p>Таблица с артикулами не помогает байеру представить, как это будет продаваться в его магазине. Нет ценности — нет сделки.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-3">
+        <div class="pain-num">03</div>
+        <h3>Переговоры — стресс и хаос</h3>
+        <p>Встреча с байером, а вы не знаете, что говорить. Импровизируете, теряете нить, соглашаетесь на меньшее.</p>
+      </div>
+      <div class="pain-last-row">
+        <div class="pain-card reveal reveal-delay-4">
+          <div class="pain-num">04</div>
+          <h3>На подготовку уходят дни</h3>
+          <p>Дизайнер занят. Фотограф дорогой. Контент-менеджер медленный. Коллекция готова — а карточек нет.</p>
+        </div>
+        <div class="pain-card reveal reveal-delay-5">
+          <div class="pain-num">05</div>
+          <h3>Байер не видит ценности</h3>
+          <p>Вы знаете, что ваш товар — огонь. Но байер не понимает экономику: сколько заработает его магазин. Без цифр — нет уверенности. Нет уверенности — нет заказа.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="section how-section" id="how">
+  <div class="container">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto;">
+      <div class="section-label">Как работает</div>
+      <h2>4 шага — и карточка готова</h2>
+      <p style="margin-top:16px;">Ни дизайнеров, ни фотостудий, ни дней ожидания.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step reveal-scale reveal reveal-delay-1">
+        <div class="step-num">1</div>
+        <h3>Товар и фото</h3>
+        <p>Загружаете фото товара со смартфона. Заполняете название, состав, артикул, сезон.</p>
+        <div class="step-tags">
+          <span class="step-tag">📸 Фото</span>
+          <span class="step-tag">🏷️ Артикул</span>
+        </div>
+      </div>
+      <div class="step reveal-scale reveal reveal-delay-2">
+        <div class="step-num">2</div>
+        <h3>Цены и условия</h3>
+        <p>Указываете оптовую цену, МОQ, сроки производства, доступные размеры и цвета.</p>
+        <div class="step-tags">
+          <span class="step-tag">💰 Цена</span>
+          <span class="step-tag">📦 МОQ</span>
+        </div>
+      </div>
+      <div class="step reveal-scale reveal reveal-delay-3">
+        <div class="step-num">3</div>
+        <h3>Рынок и байер</h3>
+        <p>AI анализирует, кому подойдёт товар и как позиционировать коллекцию для разных типов байеров.</p>
+        <div class="step-tags">
+          <span class="step-tag">🎯 ЦА</span>
+          <span class="step-tag">📊 Анализ</span>
+        </div>
+      </div>
+      <div class="step reveal-scale reveal reveal-delay-4">
+        <div class="step-num">4</div>
+        <h3>Готовые материалы</h3>
+        <p>Получаете карточку товара, PDF-презентацию, скрипт переговоров и калькулятор экономики.</p>
+        <div class="step-tags">
+          <span class="step-tag">📄 PDF</span>
+          <span class="step-tag">💬 Скрипт</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES BENTO ===== -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">Что вы получаете</div>
+      <h2>Всё, чтобы байер<br><em class="gradient-text" style="font-style:normal;">сказал «беру»</em></h2>
+    </div>
+    <div class="bento-grid">
+      <div class="bento-card accent-card reveal reveal-delay-1">
+        <div class="bento-icon">🖼️</div>
+        <h3>Оптовая карточка товара</h3>
+        <p>Профессиональная карточка с AI-обработанным фото, описанием, техническими характеристиками и условиями.</p>
+        <div class="bento-list">
+          <div class="bento-list-item">Чистый фон, профессиональный свет</div>
+          <div class="bento-list-item">Несколько ракурсов из одного фото</div>
+          <div class="bento-list-item">Таблица размеров и цветов</div>
+        </div>
+        <div class="bento-big-num">01</div>
+      </div>
+      <div class="bento-card reveal reveal-delay-2">
+        <div class="bento-icon">📄</div>
+        <h3>PDF-презентация коллекции</h3>
+        <p>Красивый PDF-каталог, который не стыдно отправить в WhatsApp или показать на встрече с байером.</p>
+        <div class="bento-big-num">02</div>
+      </div>
+      <div class="bento-card gold-card reveal reveal-delay-3">
+        <div class="bento-icon">💬</div>
+        <h3>Скрипты переговоров</h3>
+        <p>Готовые фразы для первого контакта, обработки возражений и закрытия сделки. По вашему товару и ценам.</p>
+        <div class="bento-big-num">03</div>
+      </div>
+      <div class="bento-card reveal reveal-delay-4">
+        <div class="bento-icon">🧮</div>
+        <h3>Калькулятор экономики</h3>
+        <p>Показывает байеру, сколько он заработает с вашей коллекцией. Убедительнее любых слов.</p>
+        <div class="bento-big-num">04</div>
+      </div>
+      <div class="bento-card reveal reveal-delay-5">
+        <div class="bento-icon">✨</div>
+        <h3>AI-обработка фото</h3>
+        <p>Убираем фон, улучшаем свет и цвет. Смартфонные фото становятся студийными.</p>
+        <div class="bento-big-num">05</div>
+      </div>
+      <div class="bento-card reveal reveal-delay-5">
+        <div class="bento-icon">🗂️</div>
+        <h3>Коллекция под ключ</h3>
+        <p>Создайте все карточки сезонной коллекции и объедините их в единую презентацию за один день.</p>
+        <div class="bento-big-num">06</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EXAMPLE CARD ===== -->
+<section class="section example-section" id="example">
+  <div class="container">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-label">Пример работы</div>
+      <h2 style="color:#fff;">Вот что получает<br>байер от вас</h2>
+      <p class="section-intro" style="margin-top:16px; max-width:520px; margin-left:auto; margin-right:auto;">Платье «Lina» миди. Обычное фото с телефона → профессиональная оптовая карточка за 15 минут.</p>
+    </div>
+    <div class="example-grid">
+      <div class="example-card-full reveal reveal-left reveal-delay-1">
+        <div class="ecf-header">
+          <div class="ecf-header-top">
+            <div>
+              <div class="ecf-brand">LINA Brand · Весна-Лето 2025</div>
+              <div class="ecf-name">Платье "Lina" миди</div>
+              <div class="ecf-season">Шёлк 78% / Эластан 22%</div>
+            </div>
+            <div class="ecf-badge">AI ✨</div>
+          </div>
+        </div>
+        <div class="ecf-photos">
+          <div class="ecf-photo-main">👗</div>
+          <div class="ecf-photo-thumb">📸</div>
+          <div class="ecf-photo-thumb">🔍</div>
+        </div>
+        <div class="ecf-body">
+          <div class="ecf-features">
+            <div class="ecf-feature">
+              <span class="ecf-feature-icon">🏷️</span>
+              <div>
+                <div class="ecf-feature-label">Артикул</div>
+                <div class="ecf-feature-val">LN-2025-07</div>
+              </div>
+            </div>
+            <div class="ecf-feature">
+              <span class="ecf-feature-icon">📏</span>
+              <div>
+                <div class="ecf-feature-label">Размерный ряд</div>
+                <div class="ecf-feature-val">XS · S · M · L · XL</div>
+              </div>
+            </div>
+            <div class="ecf-feature">
+              <span class="ecf-feature-icon">🎨</span>
+              <div>
+                <div class="ecf-feature-label">Цвета</div>
+                <div class="ecf-feature-val">Пыльная роза · Экрю · Чёрный</div>
+              </div>
+            </div>
+            <div class="ecf-feature">
+              <span class="ecf-feature-icon">📦</span>
+              <div>
+                <div class="ecf-feature-label">МОQ / срок</div>
+                <div class="ecf-feature-val">12 шт/цвет · 7–14 дней</div>
+              </div>
+            </div>
+          </div>
+          <div class="ecf-economics">
+            <div class="ecf-econ-title">💰 Экономика байера</div>
+            <div class="ecf-econ-grid">
+              <div class="ecf-econ-item">
+                <div class="ecf-econ-val">3 200 ₽</div>
+                <div class="ecf-econ-label">оптовая цена</div>
+              </div>
+              <div class="ecf-econ-item">
+                <div class="ecf-econ-val">9 900 ₽</div>
+                <div class="ecf-econ-label">розница</div>
+              </div>
+              <div class="ecf-econ-item">
+                <div class="ecf-econ-val">×3,1</div>
+                <div class="ecf-econ-label">наценка</div>
+              </div>
+            </div>
+          </div>
+          <div class="ecf-script">
+            <div class="ecf-script-title">💬 Скрипт WhatsApp</div>
+            <div class="ecf-script-text">«Добрый день! Отправляю карточку нашего хита сезона — платье Lina. Наценка ×3, МОQ от 12 шт. При заказе 36+ — скидка 8%. Удобно созвониться?»</div>
+          </div>
+        </div>
+      </div>
+      <div class="example-info reveal reveal-right reveal-delay-2">
+        <h3>Что вошло в эту карточку</h3>
+        <p>AI сделал всё сам: обработал фото, написал описание, рассчитал экономику и составил скрипт. Вы заполнили форму — получили готовый инструмент продаж.</p>
+        <div class="example-features">
+          <div class="example-feature-item">
+            <div class="example-feature-num">1</div>
+            <div class="example-feature-text">Фото обработано: чистый фон, студийный свет, дополнительные ракурсы</div>
+          </div>
+          <div class="example-feature-item">
+            <div class="example-feature-num">2</div>
+            <div class="example-feature-text">Описание написано под байера — не «красивое платье», а «хит сезона с наценкой ×3»</div>
+          </div>
+          <div class="example-feature-item">
+            <div class="example-feature-num">3</div>
+            <div class="example-feature-text">Экономика показывает, сколько заработает магазин — это закрывает главное возражение</div>
+          </div>
+          <div class="example-feature-item">
+            <div class="example-feature-num">4</div>
+            <div class="example-feature-text">Скрипт для WhatsApp — отправляете карточку и сразу пишете по шаблону</div>
+          </div>
+          <div class="example-feature-item">
+            <div class="example-feature-num">5</div>
+            <div class="example-feature-text">Всё это — за 15 минут. Без дизайнера и фотографа.</div>
+          </div>
+        </div>
+        <a href="#cta" class="btn btn-gold btn-lg">Создать свою карточку →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section testimonials-section" id="reviews">
+  <div class="container">
+    <div class="reveal" style="text-align:center; max-width:580px; margin:0 auto;">
+      <div class="section-label">Результаты</div>
+      <h2>Бренды, которые<br><em class="gradient-text" style="font-style:normal;">уже продают больше</em></h2>
+    </div>
+    <div class="stats-row" style="margin-top:56px;">
+      <div class="stat-card reveal reveal-delay-1">
+        <span class="stat-val" data-count="200" data-suffix="+">0</span>
+        <div class="stat-label">брендов одежды используют сервис</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-2">
+        <span class="stat-val" data-count="5" data-suffix="-7×">0</span>
+        <div class="stat-label">быстрее готовится коллекция к продажам</div>
+      </div>
+      <div class="stat-card reveal reveal-delay-3">
+        <span class="stat-val" data-count="68" data-suffix="%">0</span>
+        <div class="stat-label">байеров отвечают после первого сообщения</div>
+      </div>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card reveal reveal-delay-1">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">«Раньше на подготовку одной коллекции у нас уходило 2 недели. Теперь — день. Байеры стали говорить, что материалы выглядят "как у больших брендов". Продажи выросли в первый же месяц.»</p>
+        <div class="review-author">
+          <div class="review-avatar">М</div>
+          <div>
+            <div class="review-name">Марина К.</div>
+            <div class="review-position">Бренд Marini · Женская одежда, Москва</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-2">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">«Скрипты переговоров — это вообще отдельная история. Я стала чувствовать себя уверенно на встречах с байерами. Знаю, что говорить, когда возражают по цене. Первый байер сразу взял 3 модели.»</p>
+        <div class="review-author">
+          <div class="review-avatar">А</div>
+          <div>
+            <div class="review-name">Алина В.</div>
+            <div class="review-position">Бренд AV Studio · Трикотаж, Екатеринбург</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-3">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">«Калькулятор экономики — гениально. Байер сам считает, сколько заработает с моей коллекцией. Возражения по цене исчезли. Теперь вопрос не "дорого ли?", а "сколько взять?"»</p>
+        <div class="review-author">
+          <div class="review-avatar">Е</div>
+          <div>
+            <div class="review-name">Елена Т.</div>
+            <div class="review-position">Бренд Eleganto · Деловая одежда, СПб</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="reveal" style="text-align:center; max-width:560px; margin:0 auto;">
+      <div class="section-label">Тарифы</div>
+      <h2>Выберите то,<br>что подходит вам</h2>
+      <p style="margin-top:16px;">Первая карточка — бесплатно. Без регистрации карты.</p>
+    </div>
+    <div class="pricing-grid">
+      <!-- START -->
+      <div class="pricing-card reveal reveal-delay-1">
+        <div class="pricing-tier">Старт</div>
+        <div class="pricing-name">Одна карточка</div>
+        <div class="pricing-price">
+          <span class="pricing-amount">990</span>
+          <span class="pricing-per">₽ / карточка</span>
+        </div>
+        <p class="pricing-desc">Для тех, кто хочет попробовать или нужна разовая карточка</p>
+        <div class="pricing-features">
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Одна оптовая карточка</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> AI-обработка 3 фото</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Скрипт переговоров</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Экономика магазина</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> PDF для отправки</div>
+        </div>
+        <a href="#cta" class="btn btn-outline">Попробовать →</a>
+      </div>
+      <!-- PRO -->
+      <div class="pricing-card featured reveal reveal-delay-2">
+        <div class="pricing-badge">Популярный</div>
+        <div class="pricing-tier">Про</div>
+        <div class="pricing-name">Подписка</div>
+        <div class="pricing-price">
+          <span class="pricing-amount">5 900</span>
+          <span class="pricing-per">₽ / месяц</span>
+        </div>
+        <p class="pricing-desc">Для активных брендов — до 10 карточек и PDF-каталог коллекции</p>
+        <div class="pricing-features">
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> До 10 карточек в месяц</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> PDF-каталог коллекции</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> AI-обработка всех фото</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Скрипты под каждый товар</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Приоритетная поддержка</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Шаблоны для WhatsApp</div>
+        </div>
+        <a href="#cta" class="btn btn-gold">Начать Про →</a>
+      </div>
+      <!-- COLLECTION -->
+      <div class="pricing-card reveal reveal-delay-3">
+        <div class="pricing-tier">Коллекция</div>
+        <div class="pricing-name">Под ключ</div>
+        <div class="pricing-price">
+          <span class="pricing-amount">19 900</span>
+          <span class="pricing-per">₽</span>
+        </div>
+        <p class="pricing-desc">Вся сезонная коллекция — от фото до презентации для байеров</p>
+        <div class="pricing-features">
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> До 30 карточек товара</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Презентация коллекции</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Лукбук в PDF</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Скрипты на всю коллекцию</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Персональный менеджер</div>
+          <div class="pricing-feature"><span class="pricing-feature-check">✓</span> Готово за 3 дня</div>
+        </div>
+        <a href="#cta" class="btn btn-outline">Заказать →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="section faq-section" id="faq">
+  <div class="container">
+    <div class="reveal" style="text-align:center; max-width:560px; margin:0 auto;">
+      <div class="section-label">Вопросы и ответы</div>
+      <h2>Часто спрашивают</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-question">Это для маркетплейсов вроде Wildberries?<span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Нет. Сервис создан для оптовых продаж брендов одежды — байерам, шоурумам, региональным магазинам. Это другой рынок с другой логикой. Для WB и Ozon — другие инструменты.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Нужны ли профессиональные фото?<span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Нет. AI обрабатывает обычные фото со смартфона: убирает фон, выравнивает свет, улучшает цвет. Студийное фото выходит лучше, но совсем не обязательно.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Сколько времени занимает создание карточки?<span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner">От 10 до 20 минут — включая заполнение формы и обработку AI. PDF-презентация формируется автоматически сразу после.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Можно ли попробовать бесплатно?<span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Да! Первая карточка — полностью бесплатно. Карту вводить не нужно. Просто зарегистрируйтесь и попробуйте.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Что если я хочу сразу всю коллекцию?<span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Выберите тариф «Коллекция под ключ» — до 30 карточек, единая презентация и лукбук. Всё готово за 3 дня. Или оформите подписку «Про» и создавайте карточки самостоятельно по 10 в месяц.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Скрипты действительно работают?<span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner">AI составляет скрипты на основе вашего конкретного товара, цен и условий. Это не шаблонные фразы — это персонализированный диалог с учётом возможных возражений байера. Наши клиенты отмечают, что отклик вырос в среднем в 2–3 раза.</div></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Мои данные и фото защищены?<span class="faq-icon">+</span></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Да. Все загруженные материалы хранятся на защищённых серверах. Мы не передаём ваши фото и данные третьим лицам. Вы можете удалить свои материалы в любой момент.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT FORM ===== -->
+<section class="section contact-section" id="contact">
+  <div class="container">
+    <div class="reveal" style="max-width:560px;">
+      <div class="section-label">Связаться с нами</div>
+      <h2>Остались вопросы?<br><em class="gradient-text" style="font-style:normal;">Напишите нам</em></h2>
+      <p style="margin-top:16px;">Ответим в течение часа в рабочее время. Без скриптов и давления — просто честный разговор.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info reveal reveal-left">
+        <h3>Мы рядом, когда нужна помощь</h3>
+        <p>Расскажите о вашем бренде, задайте любой вопрос о сервисе или попросите демонстрацию — мы разберёмся вместе.</p>
+        <div class="contact-perks">
+          <div class="contact-perk">
+            <div class="contact-perk-icon">⚡</div>
+            <div class="contact-perk-text">Ответ за 1 час в рабочее время</div>
+          </div>
+          <div class="contact-perk">
+            <div class="contact-perk-icon">🎯</div>
+            <div class="contact-perk-text">Помогаем настроить первую карточку</div>
+          </div>
+          <div class="contact-perk">
+            <div class="contact-perk-icon">💬</div>
+            <div class="contact-perk-text">Консультация — бесплатно</div>
+          </div>
+          <div class="contact-perk">
+            <div class="contact-perk-icon">🛡️</div>
+            <div class="contact-perk-text">Ваши данные никому не передаём</div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form-wrap reveal reveal-right" style="position:relative;">
+        <form id="contactForm">
+          <div class="cf-group">
+            <label class="cf-label" for="cfName">Ваше имя</label>
+            <input type="text" id="cfName" class="cf-input" placeholder="Марина" required autocomplete="name">
+          </div>
+          <div class="cf-group">
+            <label class="cf-label" for="cfEmail">Email</label>
+            <input type="email" id="cfEmail" class="cf-input" placeholder="marina@brand.ru" required autocomplete="email">
+          </div>
+          <div class="cf-group">
+            <label class="cf-label" for="cfMsg">Сообщение</label>
+            <textarea id="cfMsg" class="cf-textarea" placeholder="Расскажите о своём бренде или задайте вопрос..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg cf-btn">Отправить сообщение →</button>
+        </form>
+        <div class="cf-success" id="cfSuccess">
+          <div class="cf-success-circle">✓</div>
+          <h3>Сообщение отправлено!</h3>
+          <p>Спасибо, мы получили ваш запрос.<br>Ответим в ближайшее время.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA FINAL ===== -->
+<section class="cta-section" id="cta">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label" style="color:var(--gold); justify-content:center; margin-bottom:20px;">
+        <span style="background:var(--gold); display:block; width:24px; height:2px;"></span>
+        Начните сегодня
+      </div>
+      <h2>Первая карточка — бесплатно.<br>Результат — через 15 минут.</h2>
+      <p>Оставьте email — мы пришлём доступ и инструкцию. Без звонков и продаж.</p>
+      <form class="cta-form" id="ctaForm">
+        <input type="email" class="cta-input" placeholder="ваш@email.ru" required id="ctaEmail">
+        <button type="submit" class="btn btn-gold btn-lg">Попробовать бесплатно →</button>
+      </form>
+      <div class="success-msg" id="successMsg">✓ Отлично! Проверьте почту — мы отправили доступ.</div>
+      <p class="cta-note">Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности</p>
+      <div class="cta-trust">
+        <div class="cta-trust-item">Без карты</div>
+        <div class="cta-trust-item">Без скрытых платежей</div>
+        <div class="cta-trust-item">Отмена в любой момент</div>
+        <div class="cta-trust-item">Данные защищены</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">Конструктор<span>.</span>Опт</div>
+        <p class="footer-desc">AI-сервис для брендов одежды, которые продают байерам. Создаём продающие карточки, PDF-презентации и скрипты переговоров.</p>
+        <div class="footer-socials">
+          <a href="#" class="footer-social" title="Telegram">✈</a>
+          <a href="#" class="footer-social" title="ВКонтакте">В</a>
+          <a href="#" class="footer-social" title="Instagram">◎</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Сервис</div>
+        <div class="footer-links">
+          <a href="#how">Как работает</a>
+          <a href="#features">Что вы получаете</a>
+          <a href="#example">Пример карточки</a>
+          <a href="#pricing">Тарифы</a>
+          <a href="#faq">Вопросы и ответы</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Помощь</div>
+        <div class="footer-links">
+          <a href="#">Документация</a>
+          <a href="#">Поддержка</a>
+          <a href="#">Политика конфиденциальности</a>
+          <a href="#">Публичная оферта</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Конструктор.Опт — AI-сервис для оптовых продаж</span>
+      <span>Сделано с ❤️ для брендов одежды</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== BACK TO TOP ===== -->
+<button class="back-to-top" id="backToTop" aria-label="Наверх">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"/>
+  </svg>
+</button>
+
+<script>
+// ===== STICKY NAV =====
+const nav = document.getElementById('nav');
+
+// ===== DETECT TOUCH =====
+const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+
+// ===== CURSOR GLOW (только десктоп) =====
+if (!isTouch) {
+  const glowEl = document.createElement('div');
+  glowEl.className = 'glow-cursor';
+  document.body.appendChild(glowEl);
+  document.addEventListener('mousemove', e => {
+    glowEl.style.left = e.clientX + 'px';
+    glowEl.style.top  = e.clientY + 'px';
+  });
+}
+
+// ===== PARALLAX =====
+const hero = document.getElementById('hero');
+const heroCard = hero ? hero.querySelector('.hero-visual') : null;
+const heroContent = hero ? hero.querySelector('.hero-content') : null;
+
+// ===== BACK TO TOP =====
+const backToTop = document.getElementById('backToTop');
+backToTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+function onScroll() {
+  const y = window.scrollY;
+  nav.classList.toggle('scrolled', y > 40);
+
+  // кнопка наверх
+  backToTop.classList.toggle('show', y > 500);
+
+  // параллакс: hero-visual движется медленнее фона (только десктоп, не touch)
+  if (!isTouch && heroCard && window.innerWidth > 1024) {
+    heroCard.style.transform = `translateY(${y * 0.18}px)`;
+  }
+  if (!isTouch && heroContent && window.innerWidth > 1024) {
+    heroContent.style.transform = `translateY(${y * 0.07}px)`;
+  }
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+
+// ===== TILT CARDS (только десктоп) =====
+if (!isTouch) {
+  function addTilt(selector, max) {
+    document.querySelectorAll(selector).forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        const dx = (e.clientX - cx) / (r.width  / 2);
+        const dy = (e.clientY - cy) / (r.height / 2);
+        card.style.transform = `translateY(-6px) rotateX(${-dy * max}deg) rotateY(${dx * max}deg)`;
+        card.style.transition = 'transform 0.1s ease';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+        card.style.transition = 'transform 0.35s cubic-bezier(0.22,1,0.36,1)';
+      });
+    });
+  }
+  addTilt('.pain-card', 4);
+  addTilt('.bento-card', 3);
+  addTilt('.pricing-card:not(.featured)', 4);
+}
+
+// ===== MOBILE MENU =====
+const burger = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobileMenu');
+burger.addEventListener('click', () => {
+  burger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+  document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+});
+function closeMobile() {
+  burger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ===== SCROLL REVEAL =====
+const revealClasses = '.reveal, .reveal-left, .reveal-right, .reveal-scale';
+const reveals = document.querySelectorAll(revealClasses);
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObs.unobserve(e.target); // animate once
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -48px 0px' });
+reveals.forEach(el => revealObs.observe(el));
+
+// ===== TYPEWRITER =====
+const phrases = [
+  'Продайте коллекцию байеру',
+  'Карточка товара за 15 минут',
+  'Больше закрытых сделок',
+  'Коллекция под ключ'
+];
+const typeEl = document.getElementById('typewriter');
+let phraseIdx = 0, charIdx = 0, deleting = false, wait = false;
+function type() {
+  const current = phrases[phraseIdx];
+  if (wait) { setTimeout(type, 1800); wait = false; return; }
+  if (!deleting) {
+    typeEl.textContent = current.slice(0, ++charIdx);
+    if (charIdx === current.length) { deleting = true; wait = true; setTimeout(type, 80); return; }
+  } else {
+    typeEl.textContent = current.slice(0, --charIdx);
+    if (charIdx === 0) { deleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; }
+  }
+  setTimeout(type, deleting ? 40 : 90);
+}
+type();
+
+// ===== COUNT UP (easeOut) =====
+function animateCount(el, target, suffix, duration) {
+  const start = performance.now();
+  function tick(now) {
+    const t = Math.min((now - start) / duration, 1);
+    // easeOutExpo
+    const ease = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+    el.textContent = Math.round(ease * target) + suffix;
+    if (t < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const counters = document.querySelectorAll('.stat-val[data-count]');
+const countObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    animateCount(el, parseInt(el.dataset.count), el.dataset.suffix || '', 1800);
+    countObs.unobserve(el);
+  });
+}, { threshold: 0.4 });
+counters.forEach(el => countObs.observe(el));
+
+// ===== FAQ ACCORDION =====
+document.querySelectorAll('.faq-question').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.closest('.faq-item');
+    const answer = item.querySelector('.faq-answer');
+    const isOpen = item.classList.contains('open');
+    // close all
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('open');
+      i.querySelector('.faq-answer').style.maxHeight = null;
+    });
+    if (!isOpen) {
+      item.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+  });
+});
+
+// ===== CTA FORM =====
+document.getElementById('ctaForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('button');
+  btn.textContent = '✓ Отправляем...';
+  btn.disabled = true;
+  setTimeout(() => {
+    this.style.display = 'none';
+    const msg = document.getElementById('successMsg');
+    msg.style.display = 'block';
+    msg.style.animation = 'successPop 0.5s cubic-bezier(0.22,1,0.36,1)';
+  }, 700);
+});
+
+// ===== CONTACT FORM =====
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('button');
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ Отправляем...';
+  btn.disabled = true;
+  setTimeout(() => {
+    this.style.display = 'none';
+    const success = document.getElementById('cfSuccess');
+    success.style.display = 'block';
+    // confetti-частицы
+    spawnConfetti(success.closest('.contact-form-wrap'));
+  }, 800);
+});
+
+function spawnConfetti(container) {
+  const colors = ['#8B2635','#C9A84C','#E8D5C0','#3D1A24','#F0E4C0'];
+  for (let i = 0; i < 24; i++) {
+    const dot = document.createElement('div');
+    dot.style.cssText = `
+      position:absolute; width:${6+Math.random()*6}px; height:${6+Math.random()*6}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      border-radius:50%; top:40%; left:50%;
+      pointer-events:none; z-index:10;
+      animation: confetti${i} ${0.6+Math.random()*0.6}s ease-out forwards;
+    `;
+    const angle = (Math.PI * 2 * i) / 24;
+    const dist = 80 + Math.random() * 80;
+    const tx = Math.cos(angle) * dist, ty = Math.sin(angle) * dist - 60;
+    const sheet = document.createElement('style');
+    sheet.textContent = `@keyframes confetti${i}{to{transform:translate(${tx}px,${ty}px) scale(0);opacity:0;}}`;
+    document.head.appendChild(sheet);
+    container.appendChild(dot);
+    setTimeout(() => { dot.remove(); sheet.remove(); }, 1400);
+  }
+}
+
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', function(e) {
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      const offset = 80;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>
